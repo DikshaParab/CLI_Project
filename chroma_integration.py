@@ -20,7 +20,6 @@ class ChromaManager:
         )
     
     def store_documents(self, repo_name, documents, metadatas, ids):
-        """Store documents in ChromaDB collection"""
         collection = self.client.get_or_create_collection(repo_name)
         embeddings = self.embedding_function.embed_documents(documents)
         
@@ -32,7 +31,6 @@ class ChromaManager:
         )
     
     def search_repo(self, repo_name, query, n_results=5):
-        """Search within a specific repository"""
         try:
             collection = self.client.get_collection(repo_name)
             
@@ -48,7 +46,6 @@ class ChromaManager:
             return None
     
     def search_all(self, query, n_results=5):
-        """Search across all indexed repositories"""
         results = {}
         
         query_embedding = self.embedding_function.embed_query(query)
@@ -66,5 +63,4 @@ class ChromaManager:
         return results
     
     def list_indexed_repos(self):
-        """List all indexed repositories"""
         return [col.name for col in self.client.list_collections()]

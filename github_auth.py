@@ -18,4 +18,4 @@ def authenticate_github():
         except Exception as e:
             print_error(f"Authentication failed: {str(e)}")
             if input("Try again? (y/n): ").lower() != 'y':
-                raise SystemExit("Exiting...")
+                raise SystemExit("\nExiting...\n")

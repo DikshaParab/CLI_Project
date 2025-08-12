@@ -16,14 +16,14 @@ class RepoManagerCLI:
         self.chroma = ChromaManager()
         self.github = None
         self.repos = []
+        self.user = None
     
     def run(self):
-        """Main CLI entry point"""
-        clear_screen()
         display_header("GitHub Repository Manager")
         
         try:
             self.github = authenticate_github()
+            self.user = self.github.get_user()
             self.main_menu()
         except KeyboardInterrupt:
             print_error("\nOperation cancelled by user")
@@ -31,7 +31,7 @@ class RepoManagerCLI:
             print_error(f"Fatal error: {str(e)}")
     
     def main_menu(self):
-        display_header("Welcome to the GitHub Repository Manager CLI!")
+        display_header(f"Welcome {self.user.login} to the GitHub Repository Manager CLI!")
         while True:
             display_header("Main Menu")
             
@@ -55,7 +55,7 @@ class RepoManagerCLI:
             elif choice == "5":
                 self.search_indexed_repositories()
             elif choice == "6":
-                print_success("/nGoodbye!")
+                print_success("\nGoodbye!\n")
                 break
             else:
                 print_warning("Invalid choice, please try again")
@@ -63,8 +63,6 @@ class RepoManagerCLI:
             input("\nPress Enter to continue...")
     
     def list_repositories(self):
-        """List all user repositories"""
-        clear_screen()
         display_header("My Repositories")
         
         self.repos = fetch_user_repos(self.github)
@@ -73,10 +71,9 @@ class RepoManagerCLI:
             return
         
         for idx, repo in enumerate(self.repos, 1):
-            print(f"{idx}. {repo.name} - {repo.description or 'No description'}")
+            print(f"{idx}. {repo.name}")
     
     def view_repository_structure(self):
-        """Display repository tree structure"""
         if not self.repos:
             self.repos = fetch_user_repos(self.github)
         
@@ -85,14 +82,12 @@ class RepoManagerCLI:
             return
         
         repo = self.repos[repo_idx]
-        clear_screen()
         display_header(f"Repository Structure: {repo.name}")
         
         tree = display_repo_tree(repo)
         self.console.print(tree)
     
     def index_repository(self):
-        """Index a repository into ChromaDB"""
         if not self.repos:
             self.repos = fetch_user_repos(self.github)
         
@@ -104,7 +99,6 @@ class RepoManagerCLI:
         index_repository(repo, self.chroma)
     
     def search_all_repositories_basic(self):
-        """Search through ALL repositories using basic text search"""
         if not self.repos:
             self.repos = fetch_user_repos(self.github)
         
@@ -140,7 +134,6 @@ class RepoManagerCLI:
             print_warning("\nNo matches found in any repository")
 
     def _search_repo_contents(self, repo, query):
-        """Search a single repository's contents for the query"""
         matches = []
         try:
             contents = repo.get_contents("")
@@ -161,7 +154,6 @@ class RepoManagerCLI:
         return matches
     
     def search_indexed_repositories(self):
-        """Search only in indexed repositories using ChromaDB"""
         indexed_repos = self.chroma.list_indexed_repos()
         if not indexed_repos:
             print_warning("No indexed repositories found. Please index repositories first.")
@@ -188,7 +180,6 @@ class RepoManagerCLI:
                 print("-" * 50)
     
     def _select_repository(self, prompt):
-        """Helper to select a repository"""
         if not self.repos:
             print_warning("No repositories available")
             return None

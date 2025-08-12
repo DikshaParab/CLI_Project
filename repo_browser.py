@@ -11,7 +11,6 @@ TEXT_EXTENSIONS = {
 }
 
 def fetch_user_repos(github):
-    """Fetch all repositories for authenticated user"""
     try:
         user = github.get_user()
         return list(user.get_repos())
@@ -20,7 +19,6 @@ def fetch_user_repos(github):
         return []
 
 def display_repo_tree(repo):
-    """Display repository structure as a tree"""
     tree = Tree(f"[bold]{repo.name}")
     
     def build_tree(node, path=""):
@@ -39,7 +37,6 @@ def display_repo_tree(repo):
     return tree
 
 def index_repository(repo, chroma_manager):
-    """Index repository contents into ChromaDB"""
     print_info(f"Indexing repository: {repo.name}")
     
     documents = []
