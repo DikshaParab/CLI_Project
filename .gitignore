@@ -1,2 +1,5 @@
 __pycache__
 env
+.gh_auth.json
+*.pyc
+chroma.db/

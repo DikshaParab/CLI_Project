@@ -22,7 +22,7 @@ class ChromaManager:
     def store_documents(self, repo_name, documents, metadatas, ids):
         collection = self.client.get_or_create_collection(repo_name)
         embeddings = self.embedding_function.embed_documents(documents)
-        
+
         collection.add(
             documents=documents,
             metadatas=metadatas,

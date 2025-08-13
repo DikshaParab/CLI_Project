@@ -9,9 +9,9 @@ def clear_screen():
 def display_header(title):
     console.print(
         Text(title, style="bold blue"),
-        justify="center"
+        justify="left"
     )
-    console.print("=" * len(title), justify="center")
+    console.print("=" * len(title), justify="left")
     print()
 
 def print_success(message):
